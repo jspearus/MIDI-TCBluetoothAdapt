@@ -96,7 +96,7 @@ void SerialParser(String Com) {
   xStep = Com.substring(Com.indexOf("-") + 1, Com.indexOf("&"));
   yStep = Com.substring(Com.indexOf("&") + 1, Com.indexOf("#"));
 
-  printData();
+  //printData();
   moveCursor(x.toInt(), y.toInt(), xStep.toInt(), yStep.toInt());
   xStep = "";
 }
@@ -104,7 +104,7 @@ void SerialParser(String Com) {
 
 void home(){
   int i;
-    for (i=0; i<50; i++) {
+    for (i=0; i<15; i++) {
      blehid.mouseMove(-127, -127);
    }
 }
@@ -117,7 +117,7 @@ void moveCursor(int x, int y, int xStep, int yStep){
   for (int i=0; i<y; i++) {   // Move Verticl - Y AXIS
     blehid.mouseMove(0, yStep);
   }
-  delay(25);
+  delay(10);
   leftClick();
 }
 
