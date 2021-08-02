@@ -28,14 +28,15 @@ String x = "";
 String y = "";
 String xStep = "";
 String yStep = "";
+String hStep = "";
 
 //Constants##################################
 #define MOVE_STEP    10
 
 //Function Declarations #############################
 void SerialParser(String Com);
-void home();
-void moveCursor(int x, int y, int xStep, int yStep);
+void home(int step);
+void moveCursor(int x, int y, int xStep, int yStep, int hStep);
 void leftClick();
 void startAdv(void);
 void printData();
@@ -69,7 +70,7 @@ void setup()
   // Set up and start advertising
   startAdv();
   delay(2000);
-  home();
+  home(15);
 }
 
 // MAIN LOOP ###########################################
@@ -94,23 +95,24 @@ void SerialParser(String Com) {
   x = Com.substring(0, Com.indexOf("@"));
   y = Com.substring(Com.indexOf("@") + 1, Com.indexOf("-"));
   xStep = Com.substring(Com.indexOf("-") + 1, Com.indexOf("&"));
-  yStep = Com.substring(Com.indexOf("&") + 1, Com.indexOf("#"));
+  yStep = Com.substring(Com.indexOf("-") + 1, Com.indexOf("^"));
+  hStep = Com.substring(Com.indexOf("^") + 1, Com.indexOf("#"));
 
   //printData();
-  moveCursor(x.toInt(), y.toInt(), xStep.toInt(), yStep.toInt());
+  moveCursor(x.toInt(), y.toInt(), xStep.toInt(), yStep.toInt(), hStep.toInt());
   xStep = "";
 }
 //End SerialParser Function
 
-void home(){
+void home(int hStep){
   int i;
-    for (i=0; i<15; i++) {
+    for (i=0; i<hStep; i++) {
      blehid.mouseMove(-127, -127);
    }
 }
 
-void moveCursor(int x, int y, int xStep, int yStep){
-  home();
+void moveCursor(int x, int y, int xStep, int yStep, int hStep){
+  home(hStep);
   for (int i=0; i<x; i++){    // move Horizontal - X AXIS
     blehid.mouseMove(xStep, 0);
   } 
@@ -158,7 +160,7 @@ void startAdv(void)
 
 void printData(){
   if (xStep != "") {
-    Serial.println(String("Xval=") + x + ", Yval=" + y + ", Xstep=" + xStep+ ", Ystep=" + yStep);
+    Serial.println(String("Xval=") + x + ", Yval=" + y + ", Xstep=" + xStep+ ", Ystep=" + yStep+ ", Hstep=" + hStep);
   } else {
     Serial.println("error ?");
   }
