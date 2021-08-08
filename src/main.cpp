@@ -95,7 +95,7 @@ void SerialParser(String Com) {
   x = Com.substring(0, Com.indexOf("@"));
   y = Com.substring(Com.indexOf("@") + 1, Com.indexOf("-"));
   xStep = Com.substring(Com.indexOf("-") + 1, Com.indexOf("&"));
-  yStep = Com.substring(Com.indexOf("-") + 1, Com.indexOf("^"));
+  yStep = Com.substring(Com.indexOf("&") + 1, Com.indexOf("^"));
   hStep = Com.substring(Com.indexOf("^") + 1, Com.indexOf("#"));
 
   //printData();
