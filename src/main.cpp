@@ -1,6 +1,11 @@
 
 
 
+
+
+
+
+
 /*********************************************************************
  MIDI-TC pro Blutooth Adapter
 *********************************************************************/
@@ -24,6 +29,7 @@ BLEHidAdafruit blehid;
 
 //Variables
 String DataIn = "";
+String Serial_Com = "";
 String x = "";
 String y = "";
 String xStep = "";
@@ -40,7 +46,7 @@ void moveCursor(int x, int y, int xStep, int yStep, int hStep);
 void leftClick();
 void startAdv(void);
 void printData();
-
+void serialEvent();
 
 void setup() 
 {
@@ -50,7 +56,7 @@ void setup()
 
   // Start the I2C Bus as Slave on address 9
   Wire.begin(9); 
-
+  Wire.setClock(400000);
 
   Serial.println("MIDI TC Bluetooth Adapter Ready..");
 
@@ -70,7 +76,6 @@ void setup()
   // Set up and start advertising
   startAdv();
   delay(2000);
-  home(15);
 }
 
 // MAIN LOOP ###########################################
@@ -81,7 +86,21 @@ void loop()
   }
   if(DataIn != ""){
     //Serial.println(DataIn);         // print Data Stream as string
-    SerialParser(DataIn);
+    if(DataIn == "alloff#"){
+      moveCursor(2, 2, 63, 19, 9);
+    }
+    else if(DataIn == "full#"){
+      moveCursor(2, 2, 20, 51, 9);
+    }
+    else if(DataIn == "worship#"){
+      moveCursor(2, 2, 67, 46, 9);
+    }
+    else if(DataIn == "home#"){
+      home(15);
+    }
+    else{
+      SerialParser(DataIn);
+    }
     DataIn = "";
   }
 }
@@ -113,21 +132,21 @@ void home(int hStep){
 
 void moveCursor(int x, int y, int xStep, int yStep, int hStep){
   home(hStep);
+  delay(20);
   for (int i=0; i<x; i++){    // move Horizontal - X AXIS
-    blehid.mouseMove(xStep, 0);
+    blehid.mouseMove(xStep, yStep);
   } 
-  for (int i=0; i<y; i++) {   // Move Verticl - Y AXIS
-    blehid.mouseMove(0, yStep);
-  }
-  delay(10);
+  // for (int i=0; i<y; i++) {   // Move Verticl - Y AXIS
+  //   blehid.mouseMove(0, yStep);
+  // }
+  delay(30);
   leftClick();
 }
 
 void leftClick(){
   blehid.mouseButtonPress(MOUSE_BUTTON_LEFT);
-  delay(100);
+  delay(20);
   blehid.mouseButtonRelease();
-  delay(10);
 }
 
 void startAdv(void)
@@ -163,5 +182,24 @@ void printData(){
     Serial.println(String("Xval=") + x + ", Yval=" + y + ", Xstep=" + xStep+ ", Ystep=" + yStep+ ", Hstep=" + hStep);
   } else {
     Serial.println("error ?");
+  }
+}
+
+void serialEvent(){        //PC Com
+  while (Serial.available()) {  
+    Serial_Com= Serial.readStringUntil('\n');
+    Serial.println(Serial_Com);
+    if (Serial_Com == "alloff"){
+      moveCursor(2, 2, 63, 19, 9);
+    }
+    else if (Serial_Com == "full"){
+      moveCursor(2, 2, 20, 51, 9);
+    }
+    else if (Serial_Com == "worship"){
+      moveCursor(2, 2, 67, 46, 9);
+    }
+    else if (Serial_Com == "home"){
+      home(10);
+    }
   }
 }
