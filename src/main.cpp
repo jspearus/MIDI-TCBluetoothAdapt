@@ -90,10 +90,10 @@ void loop()
       moveCursor(2, 2, 63, 19, 9);
     }
     else if(DataIn == "full#"){
-      moveCursor(2, 2, 20, 51, 9);
+      moveCursor(2, 2, 20, 51, 8);
     }
     else if(DataIn == "worship#"){
-      moveCursor(2, 2, 67, 46, 9);
+      moveCursor(2, 2, 67, 46, 8);
     }
     else if(DataIn == "home#"){
       home(15);
@@ -193,10 +193,10 @@ void serialEvent(){        //PC Com
       moveCursor(2, 2, 63, 19, 9);
     }
     else if (Serial_Com == "full"){
-      moveCursor(2, 2, 20, 51, 9);
+      moveCursor(2, 2, 20, 51, 8);
     }
     else if (Serial_Com == "worship"){
-      moveCursor(2, 2, 67, 46, 9);
+      moveCursor(2, 2, 67, 46, 8);
     }
     else if (Serial_Com == "home"){
       home(10);
