@@ -35,6 +35,7 @@ String y = "";
 String xStep = "";
 String yStep = "";
 String hStep = "";
+String click = "false";
 
 //Constants##################################
 #define MOVE_STEP    10
@@ -42,7 +43,7 @@ String hStep = "";
 //Function Declarations #############################
 void SerialParser(String Com);
 void home(int step);
-void moveCursor(int x, int y, int xStep, int yStep, int hStep);
+void moveCursor(int x, int y, int xStep, int yStep, String click, int hStep);
 void leftClick();
 void startAdv(void);
 void printData();
@@ -87,16 +88,19 @@ void loop()
   if(DataIn != ""){
     //Serial.println(DataIn);         // print Data Stream as string
     if(DataIn == "alloff#"){
-      moveCursor(2, 2, 63, 19, 9);
+      moveCursor(2, 2, 63, 19, "false",  9);
     }
     else if(DataIn == "full#"){
-      moveCursor(2, 2, 20, 51, 8);
+      moveCursor(2, 2, 20, 51, "false", 8);
     }
     else if(DataIn == "worship#"){
-      moveCursor(2, 2, 67, 46, 8);
+      moveCursor(2, 2, 67, 46, "false",8);
     }
     else if(DataIn == "home#"){
       home(15);
+    }
+    else if (DataIn == "click#"){
+      leftClick();
     }
     else{
       SerialParser(DataIn);
@@ -115,10 +119,11 @@ void SerialParser(String Com) {
   y = Com.substring(Com.indexOf("@") + 1, Com.indexOf("-"));
   xStep = Com.substring(Com.indexOf("-") + 1, Com.indexOf("&"));
   yStep = Com.substring(Com.indexOf("&") + 1, Com.indexOf("^"));
-  hStep = Com.substring(Com.indexOf("^") + 1, Com.indexOf("#"));
+  hStep = Com.substring(Com.indexOf("^") + 1, Com.indexOf("~"));
+  click = Com.substring(Com.indexOf("~") + 1, Com.indexOf("#"));
 
   //printData();
-  moveCursor(x.toInt(), y.toInt(), xStep.toInt(), yStep.toInt(), hStep.toInt());
+  moveCursor(x.toInt(), y.toInt(), xStep.toInt(), yStep.toInt(), click, hStep.toInt());
   xStep = "";
 }
 //End SerialParser Function
@@ -130,17 +135,17 @@ void home(int hStep){
    }
 }
 
-void moveCursor(int x, int y, int xStep, int yStep, int hStep){
+void moveCursor(int x, int y, int xStep, int yStep, String click, int hStep){
   home(hStep);
   delay(20);
   for (int i=0; i<x; i++){    // move Horizontal - X AXIS
     blehid.mouseMove(xStep, yStep);
   } 
-  // for (int i=0; i<y; i++) {   // Move Verticl - Y AXIS
-  //   blehid.mouseMove(0, yStep);
-  // }
-  delay(30);
-  leftClick();
+  if (click == "true"){
+    delay(20);
+    leftClick();
+    click = "false";
+  }
 }
 
 void leftClick(){
@@ -190,16 +195,19 @@ void serialEvent(){        //PC Com
     Serial_Com= Serial.readStringUntil('\n');
     Serial.println(Serial_Com);
     if (Serial_Com == "alloff"){
-      moveCursor(2, 2, 63, 19, 9);
+      moveCursor(2, 2, 63, 19, "false", 9);
     }
     else if (Serial_Com == "full"){
-      moveCursor(2, 2, 20, 51, 8);
+      moveCursor(2, 2, 20, 51,"false", 8);
     }
     else if (Serial_Com == "worship"){
-      moveCursor(2, 2, 67, 46, 8);
+      moveCursor(2, 2, 67, 46, "false", 8);
     }
     else if (Serial_Com == "home"){
       home(10);
+    }
+    else if (Serial_Com == "click"){
+      leftClick();
     }
   }
 }
